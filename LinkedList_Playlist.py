@@ -105,7 +105,7 @@ def main():
     add_trackID = []  # Initialize track ID of the track to be added array
     add_trackID.append(int(sys.argv[3]))  # Append the command line arguement to the the track to be added array
     playlist = Playlist()  # Set the variable playlist with the Playlist class
-    CSVpath = '/home/ec2-user/environment//Hand_In/Lab_5/'  # Set the variable CDVpath to the path to the location of this file
+    CSVpath = '/home/ec2-user/environment//Projects/LinkedList_Playlist/'  # Set the variable CDVpath to the path to the location of this file
     with open(CSVpath+'raw_tracks.csv', newline='') as csvfile:  # Opens the csv file
          tracks=csv.reader(csvfile,dialect='excel') #reads in the csv file to file tracks assuming the csv file has excel attributes
          
