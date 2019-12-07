@@ -1,5 +1,4 @@
 """
-course: ECE3822
 filename: Lab_5.py
 author: Tom Painadath
 description: program defines a data type, which has linked list methods which can be used by clients
