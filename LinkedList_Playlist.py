@@ -1,5 +1,5 @@
 """
-filename: Lab_5.py
+filename: LinkedList_Playlist.py
 author: Tom Painadath
 description: program defines a data type, which has linked list methods which can be used by clients
              to create a playlist, delete a song, Add a song at any location in the playlist, Print
@@ -28,6 +28,20 @@ class Playlist:  # Define Playlist class
         while current_node.next != None:  # Define while loop to iterate over the list while next node is not None
             current_node = current_node.next  # Set current node equal to next node
         current_node.next = new_node  # Set the last node point to the new node
+    
+    def playlist_builder(self,num_of_tracks):
+        CSVpath = '/home/ec2-user/environment//Hand_In/Lab_5/'  # Set the variable CDVpath to the path to the location of this file
+        with open(CSVpath+'raw_tracks.csv', newline='') as csvfile:  # Opens the csv file
+             tracks=csv.reader(csvfile,dialect='excel') #reads in the csv file to file tracks assuming the csv file has excel attributes
+         
+             i = 0  # Initialize the variable i to 0
+             music = 'music'  # Set the variable music to the string 'music' as a placeholder for actual music
+             random_tracks = random.sample(range(1,109728), num_of_tracks)  # Set variable random_tracks to random numbers of tracks needed to be includes in the playlist
+             for row in tracks:  # For loop to interate throught each row in the CSV file
+                 data = row[5],row[2],row[34],row[0], music  # Set the variable data to the Artist, Album, Track name and Track ID
+                 if i in random_tracks:  # Check if the row number matches the random tracks number
+                    self.push(data)  # push the track data as node into the playlist
+                 i=i+1  # Increment the variable i by 1
         
     def size(self):  # Define method that returns the size/length of the list
         current_node = self._first  # Set the variable current_node as the current node 
@@ -72,7 +86,23 @@ class Playlist:  # Define Playlist class
                 return  # exit the loop
             previous_node = current_node  # Set previous node to current node
             current_node_location += 1  # Increment the current node location tracker by one
-
+    
+    def insert(self, add_trackID):
+        add_trackID_array = []  # Initialize the track to be added array
+        add_trackID_array.append(add_trackID)  # Append the command line arguement to the the track to be added array
+        CSVpath = '/home/ec2-user/environment//Hand_In/Lab_5/'  # Set the variable CDVpath to the path to the location of this file
+        with open(CSVpath+'raw_tracks.csv', newline='') as csvfile:  # Opens the csv file
+             tracks=csv.reader(csvfile,dialect='excel')  # Reads in the csv file to file tracks assuming the csv file has excel attributes
+             music = 'music'
+             j = 0  # Initialize the variable j to 0
+             for row in tracks:  # For loop to interate throught each row in the CSV file
+                 new_data = row[5],row[2],row[34],row[0], music  # Set the variable data to the Artist, Album, Track name and Track ID
+                 if j > 0:  #Check if the current is row > 0
+                    track_ID = int(row[0])  # Set the variable track_ID to the integer value of first column in the CSV file
+                    if track_ID in add_trackID_array:  # Only print out first ten tracks for testing purposes
+                       self.add_item(1, new_data)  # Add data to the playlist at the location specified
+                 j = j+1  # Increment the variable j by 1
+    
     def str(self):  # Define method to print the list
         artist_name = []  # Initilialize artist name array
         track_name = []  # Initilialize track name array
@@ -94,52 +124,29 @@ class Playlist:  # Define Playlist class
             print('Track name is: ', track_name[i])  # Print the track name
             print()  # Empty line
         i= i+1  # Increment the variable i by 1
-        
+
+ 
 ###################
 ### Client Code ###
 ###################
 
 def main():  
+    playlist = Playlist()  # Set the variable playlist with the Playlist class
     num_of_tracks = int(sys.argv[1])  # Command line arguement for the number of tracks in the playlist
     delete_num = int(sys.argv[2])  # Command line arguement for the location of the track to be deleted from the playlist
-    add_trackID = []  # Initialize track ID of the track to be added array
-    add_trackID.append(int(sys.argv[3]))  # Append the command line arguement to the the track to be added array
-    playlist = Playlist()  # Set the variable playlist with the Playlist class
-    CSVpath = '/home/ec2-user/environment//Projects/LinkedList_Playlist/'  # Set the variable CDVpath to the path to the location of this file
-    with open(CSVpath+'raw_tracks.csv', newline='') as csvfile:  # Opens the csv file
-         tracks=csv.reader(csvfile,dialect='excel') #reads in the csv file to file tracks assuming the csv file has excel attributes
-         
-         i = 0  # Initialize the variable i to 0
-         music = 'music'  # Set the variable music to the string 'music' as a placeholder for actual music
-         random_tracks = random.sample(range(1,109728), num_of_tracks)  # Set variable random_tracks to random numbers of tracks needed to be includes in the playlist
-         for row in tracks:  # For loop to interate throught each row in the CSV file
-             data = row[5],row[2],row[34],row[0], music  # Set the variable data to the Artist, Album, Track name and Track ID
-             if i in random_tracks:  # Check if the row number matches the random tracks number
-                playlist.push(data)  # push the track data as node into the playlist
-             i=i+1  # Increment the variable i by 1
-    
-    playlist.str()  # Print the original playlist created
-      
-    with open(CSVpath+'raw_tracks.csv', newline='') as csvfile:  # Opens the csv file
-         tracks=csv.reader(csvfile,dialect='excel')  # Reads in the csv file to file tracks assuming the csv file has excel attributes
-         
-         j = 0  # Initialize the variable j to 0
-         for row in tracks:  # For loop to interate throught each row in the CSV file
-             new_data = row[5],row[2],row[34],row[0], music  # Set the variable data to the Artist, Album, Track name and Track ID
-             if j > 0:  #Check if the current is row > 0
-                 track_ID = int(row[0])  # Set the variable track_ID to the integer value of first column in the CSV file
-                 if track_ID in add_trackID:  # Only print out first ten tracks for testing purposes
-                    playlist.add_item(1, new_data)  # Add data to the playlist at the location specified
-             j = j+1  # Increment the variable j by 1
-    
+    add_trackID = int(sys.argv[3])
 
+    playlist.playlist_builder(num_of_tracks)  # Create playlist
+    playlist.str()  # Print the original playlist created
+    
+    playlist.insert(add_trackID)  # insert a track using trackID
     playlist.str()  # Print the playlist after the adding a song
     
     playlist.delete(delete_num-1)  # Delete a track from the playlist 
-
     playlist.str()  # Print the altered playlist
     
 
 if __name__ == '__main__':
     main()
+      
       
